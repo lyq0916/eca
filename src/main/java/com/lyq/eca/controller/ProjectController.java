@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ProjectController {
@@ -185,7 +186,14 @@ public class ProjectController {
     @CrossOrigin
     @GetMapping(value = "api/costtype")
     @ResponseBody
-    public List<CostMaintain> costtype(){
+    public List<CostMaintain> costtype() {
         return costMaintainService.findByCurdate();
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/getaddress")
+    @ResponseBody
+    public Map<String, Integer> getaddress() {
+        return projectService.getAddress();
     }
 }

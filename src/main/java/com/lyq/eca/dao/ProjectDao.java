@@ -14,12 +14,14 @@ public interface ProjectDao extends JpaRepository<Project,Integer>{
     Project getByType(String type);
     List<Project> findAll();
     /*弃--报错*/
-    List<Project> findByPnameContaining(String pname);
-    List<Project> findAllByPnameLikeOrAddressLike(String pname,String address);
+    //List<Project> findByPnameContaining(String pname);
+    //List<Project> findAllByPnameLikeOrAddressLike(String pname,String address);
     @Query("select p from Project p where p.pname like %:name%")
     List<Project> search(@Param("name") String name);
 
     /*生成饼状图*/
     @Query(value = "select p.type,count(*) from Project p group by p.type",nativeQuery = true)
     List<Object[]> groupByType();
+
+
 }

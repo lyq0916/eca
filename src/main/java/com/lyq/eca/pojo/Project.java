@@ -21,9 +21,14 @@ public class Project {
      * 部署时间
      * */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "GMT+08")
-    Date start_date;//开工日期
+    @Column(name="start_date")
+    Date startdate;//开工日期
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "GMT+08")
-    Date end_date;//完工日期
+    @Column(name = "e_end_date")
+    Date enddate1;//预计完工日期
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd",timezone = "GMT+08")
+    @Column(name = "end_date")
+    Date enddate;//完工日期
     String address;//地址
     String type;//项目类型 =>交通运输，住宅建筑，商业办公，医疗卫生，环保节能，文化体育，服务领域，农业水利，其他领域
     @JsonFormat
@@ -31,13 +36,14 @@ public class Project {
     @JsonFormat
     double budget;//预算
 
-    public Project(int pid, String pname, String bnumber, String state, Date start_date, Date end_date, String address, String type, double cost_all, double budget) {
+    public Project(int pid, String pname, String bnumber, String state, Date startdate, Date enddate1, Date enddate, String address, String type, double cost_all, double budget) {
         this.pid = pid;
         this.pname = pname;
         this.bnumber = bnumber;
         this.state = state;
-        this.start_date = start_date;
-        this.end_date = end_date;
+        this.startdate = startdate;
+        this.enddate1 = enddate1;
+        this.enddate = enddate;
         this.address = address;
         this.type = type;
         this.cost_all = cost_all;
@@ -45,7 +51,6 @@ public class Project {
     }
 
     public Project() {
-
     }
 
     public int getPid() {
@@ -80,20 +85,28 @@ public class Project {
         this.state = state;
     }
 
-    public Date getStart_date() {
-        return start_date;
+    public Date getStartdate() {
+        return startdate;
     }
 
-    public void setStart_date(Date start_date) {
-        this.start_date = start_date;
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
     }
 
-    public Date getEnd_date() {
-        return end_date;
+    public Date getEnddate1() {
+        return enddate1;
     }
 
-    public void setEnd_date(Date end_date) {
-        this.end_date = end_date;
+    public void setEnddate1(Date enddate1) {
+        this.enddate1 = enddate1;
+    }
+
+    public Date getEnddate() {
+        return enddate;
+    }
+
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
     }
 
     public String getAddress() {
@@ -135,8 +148,9 @@ public class Project {
                 ", pname='" + pname + '\'' +
                 ", bnumber='" + bnumber + '\'' +
                 ", state='" + state + '\'' +
-                ", start_date=" + start_date +
-                ", end_date=" + end_date +
+                ", startdate=" + startdate +
+                ", enddate1=" + enddate1 +
+                ", enddate=" + enddate +
                 ", address='" + address + '\'' +
                 ", type='" + type + '\'' +
                 ", cost_all=" + cost_all +
