@@ -1,8 +1,6 @@
 package com.lyq.eca.controller;
 
-import com.lyq.eca.pojo.CostMaintain;
-import com.lyq.eca.pojo.Project;
-import com.lyq.eca.pojo.Result;
+import com.lyq.eca.pojo.*;
 import com.lyq.eca.service.CostMaintainService;
 import com.lyq.eca.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +47,14 @@ public class ProjectController {
     public String messageNotReadable(HttpMessageNotReadableException exception, HttpServletResponse response) {
         System.out.println(exception);
         return "";
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/getprojectbyid")
+    @ResponseBody
+    public Project getProjectById(@RequestParam("pid") String pid) {
+        //System.out.println(pid);
+        return projectService.findByPid(Integer.parseInt(pid));
     }
 
     @CrossOrigin
@@ -104,43 +110,6 @@ public class ProjectController {
         }
     }
 
-    /*  @CrossOrigin
-      @PostMapping(value = "api/costshowbypid")
-      @ResponseBody
-      public List<CostMaintain> costshowpid(@RequestBody CostMaintain costMaintain){
-          //System.out.println(costMaintain.getPid());
-          return costMaintainService.findByPid(costMaintain.getPid());
-      }
-
-      @CrossOrigin
-      @PostMapping(value = "api/costshowbydate")
-      @ResponseBody
-      public List<CostMaintain> costshowbydate(@RequestBody CostMaintain costMaintain) throws ParseException {
-          SimpleDateFormat trans=new SimpleDateFormat("yyyy-MM-dd");
-          String s=trans.format(costMaintain.getUpdatedate());
-          System.out.println(s);
-          Date date=trans.parse(s);
-          //System.out.println(date);
-          return costMaintainService.findByUpdatedate(date);
-      }
-
-      @CrossOrigin
-      @PostMapping(value = "api/costshowbydp")
-      @ResponseBody
-      public List<CostMaintain> costshowbydp(@RequestBody CostMaintain costMaintain) throws ParseException {
-          System.out.println(costMaintain.getPid());
-          System.out.println(costMaintain.getUpdatedate());
-          //int pid=projectService.getPidByPname(pname);
-
-          //写的有点麻烦。。。日期转日期 格式变化
-          SimpleDateFormat trans=new SimpleDateFormat("yyyy-MM-dd");
-          String s=trans.format(costMaintain.getUpdatedate());
-          System.out.println(s);
-          Date date=trans.parse(s);
-          System.out.println(date);
-          return costMaintainService.findByPidAndUpdatedate(costMaintain.getPid(),date);
-      }
-  */
     @CrossOrigin
     @GetMapping(value = "api/searchcost")
     @ResponseBody
@@ -176,6 +145,7 @@ public class ProjectController {
         }
     }
 
+    //图表相关
     @CrossOrigin
     @GetMapping(value = "api/groupbytype")
     @ResponseBody
@@ -186,7 +156,7 @@ public class ProjectController {
     @CrossOrigin
     @GetMapping(value = "api/costtype")
     @ResponseBody
-    public List<CostMaintain> costtype() {
+    public List<Object[]> costtype() {
         return costMaintainService.findByCurdate();
     }
 
@@ -196,4 +166,102 @@ public class ProjectController {
     public Map<String, Integer> getaddress() {
         return projectService.getAddress();
     }
+
+    @CrossOrigin
+    @GetMapping(value = "api/costgroupByPid")
+    @ResponseBody
+    public List<Object[]> costgroupByPid() {
+        return costMaintainService.costgroupByPid();
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/groupbystate")
+    @ResponseBody
+    public List<Object[]> groupByState() {
+        return projectService.groupByState();
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/costtypebypid")
+    @ResponseBody
+    public List<Object[]> costtypeByPid(@RequestParam("pid")String pid){
+        return costMaintainService.groupByTypeFroPid(Integer.parseInt(pid));
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/getbidbeans")
+    @ResponseBody
+    public List<BidBean> getbidbeans() {
+        return projectService.getBidBeans();
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/getconstbeans")
+    @ResponseBody
+    public List<ConstBean> getconstbeans() {
+        return projectService.getConstBeans();
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/updatebp")
+    @ResponseBody
+    public Result updatebp(@RequestParam("pid") String pid, @RequestParam("state") String state) {
+        try {
+            System.out.println(state);
+            projectService.updateBidProject(state, Integer.parseInt(pid));
+            return new Result(200);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new Result(400);
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/addconst")
+    @ResponseBody
+    public Result addconst(@RequestParam("pid") String pid, @RequestParam("start") String start, @RequestParam("end") String end) {
+        try {
+            SimpleDateFormat trans = new SimpleDateFormat("yyyy-MM-dd");
+            Date date1 = trans.parse(start);
+            Date date2 = trans.parse(end);
+            projectService.addConstProject(Integer.parseInt(pid), date1, date2);
+            return new Result(200);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new Result(400);
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/start")
+    @ResponseBody
+    public Result start(@RequestParam("pid") String pid, @RequestParam("start") String start) throws ParseException {
+        try {
+            //System.out.println(start);
+            SimpleDateFormat trans = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = trans.parse(start);
+            //System.out.println(date);
+            projectService.startConstProject(date, Integer.parseInt(pid));
+            return new Result(200);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new Result(400);
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "api/end")
+    @ResponseBody
+    public Result end(@RequestParam("pid") String pid, @RequestParam("end") String end) throws ParseException {
+        try {
+            SimpleDateFormat trans = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = trans.parse(end);
+            projectService.endConstProject(date, Integer.parseInt(pid));
+            return new Result(200);
+        } catch (Exception e) {
+            return new Result(400);
+        }
+    }
+
+
 }

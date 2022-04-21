@@ -12,6 +12,12 @@ public interface CostMaintainDao extends JpaRepository<CostMaintain,Integer>{
     List<CostMaintain> findByUpdatedate(Date updatedate);
     List<CostMaintain> findByPidAndUpdatedate(int pid,Date updatedate);
 
-    @Query(value = "select * from cost_maintain where date(update_date)=curdate()",nativeQuery = true)
-    List<CostMaintain> findByCurdate();
+    @Query(value = "select type,sum(money) from cost_maintain where date(update_date)=curdate() group by type;",nativeQuery = true)
+    List<Object[]> findByCurdate();
+
+    @Query(value = "select pid,sum(money) from cost_maintain group by pid",nativeQuery = true)
+    List<Object[]> costgroupByPid();
+
+    @Query(value = "select type,sum(money) from cost_maintain where pid=?1 group by type;",nativeQuery = true)
+    List<Object[]> groupByTypeFroPid(int pid);
 }
